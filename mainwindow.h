@@ -29,6 +29,10 @@ private slots:
 
     void on_luck_textChanged(const QString &arg1);
 
+    void on_create_clicked();
+
+    void on_clean_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
