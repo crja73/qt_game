@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>  //message box for errors
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,8 +48,8 @@ void MainWindow::my_func()
 
     if(!flag || pow < 1 || pow > 10){  //
         ui->label_3->setText("<font color='black'>Сила</font>");
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
+//        ui->erro_label->setVisible(true);
+//        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
     }
     else{
         if (pow < 4){
@@ -59,7 +61,7 @@ void MainWindow::my_func()
         else{
             ui->label_3->setText("<font color='green'>Сила</font>");
         }
-        ui->erro_label->setVisible(false);
+//        ui->erro_label->setVisible(false);
         ui->point_label->setText(QString("%1").arg(points - pow, 0, 'f', 1));  // выводим сотавшуюся сумму очков
         points = points - pow; // сохраняем количество оставшихся очков
     }
@@ -68,8 +70,8 @@ void MainWindow::my_func()
     dexter = ui->dexterity->text().toInt(&flag2); //  снимаем очки ловкости
     if(!flag2 || dexter < 1 || dexter > 10){
         ui->label_4->setText("<font color='black'>Ловкость</font>");
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
+//        ui->erro_label->setVisible(true);
+//        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
     }
     else{
         if (dexter < 4){
@@ -82,7 +84,7 @@ void MainWindow::my_func()
             ui->label_4->setText("<font color='green'>Ловкость</font>");
         }
         ui->point_label->setText(QString("%1").arg(points - dexter, 0, 'f', 1));  //  выводим оставшиеся очки с учетом ловкости
-         ui->erro_label->setVisible(false);
+         //ui->erro_label->setVisible(false);
          points = points - dexter;  //  сохряняем оставшееся количество очков
 
 
@@ -91,8 +93,7 @@ void MainWindow::my_func()
     intellekt = ui->intelligence->text().toInt(&flag3);  // интеллект
     if(!flag3 || intellekt < 1 || intellekt > 10){
         ui->label_5->setText("<font color='black'>Интеллект</font>");
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
+
     }
     else{
         if (intellekt < 4){
@@ -112,8 +113,7 @@ void MainWindow::my_func()
     udacha = ui->luck->text().toInt(&flag4);  //  очки удачи
     if(!flag4 || udacha < 1 || udacha > 10){
         ui->label_6->setText("<font color='black'>Удача</font>");
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
+
     }
     else{
         if (udacha < 4){
@@ -177,68 +177,86 @@ void MainWindow::on_luck_textChanged(const QString &arg1)
 void MainWindow::on_create_clicked()
 {
 
+    bool m_flag = true;
     QString neww;
     neww = ui->name->text();
     int counter = neww.count();
-    ui->erro_label->setVisible(true);
+    if(counter < 3){
+        QMessageBox::information(this, "Error",  "Имя не должно быть менее 3 символов и не больше 20");
+        m_flag = false;
+    }
+
+    if(m_flag){
+
     if (ui->male->isChecked()){
         pol = 0;
     }
-    if (ui->woman->isChecked()){
+    else if (ui->woman->isChecked()){
         pol = 1;
+    }
+    else{
+        QMessageBox::information(this, "Error", "Пол не выбран");
+        m_flag = false;
+    }
     }
     bool flag, flag2, flag3, flag4;
     bool q_flag=true;
     double pow, dexter, intellekt, udacha, pow2, dexter2, intellekt2, udacha2;
     double health, mana, atack, protect;
     pow=ui->power->text().toInt(&flag);
-    if(flag & pow > 0 & pow < 11){
+    if(m_flag){
+    if(flag & pow > 0 & pow < 11){  // проверяем значение силы
         pow2 = pow;
     }
     else{
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Нельзя создать персонажа");
+
+        QMessageBox::information(this, "Error", "Некорректное значение силы");
+        m_flag = false;
         q_flag=false;
     }
-
+    }
+    if(m_flag){
     dexter = ui->dexterity->text().toInt(&flag2);
     if(flag2 & dexter > 0 & dexter < 11){
         dexter2 = dexter;
 
     }
     else{
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Нельзя создать персонажа");
-        q_flag=false;
-    }
 
+        QMessageBox::information(this, "Error", "Некорректное значение ловкости");
+        m_flag=false;
+    }
+    }
+    if(m_flag){
     intellekt = ui->intelligence->text().toInt(&flag3);
     if(flag3 & intellekt > 0 & intellekt < 11){
         intellekt2 = intellekt;
     }
     else{
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Нельзя создать персонажа");
-        q_flag=false;
+        QMessageBox::information(this, "Error", "Некорректное значение интеллекта");
+        m_flag=false;
     }
+    }
+    if(m_flag){
     udacha = ui->luck->text().toInt(&flag4);
     if(flag4 & udacha > 0 & udacha < 11){
         udacha2 = udacha;
     }
     else{
-        ui->erro_label->setVisible(true);
-        ui->erro_label->setText("Нельзя создать персонажа");
-        q_flag=false;
+        QMessageBox::information(this, "Error", "Некорректное значение удача");
+        m_flag=false;
+    }
     }
     health = (4 * pow2) + (2 * dexter2) + intellekt2 + udacha2;
     mana = (3 * pow) + dexter2 + (4 * intellekt2) + udacha;
     atack = (5 * pow2) + (3 * dexter2) + intellekt2 + (2 * udacha2);
     protect = pow2+ (3 * dexter2) + (4 * intellekt2) + (2 * udacha2);
-    ui->health_label->setNum(health);
-    ui->mana_label->setNum(mana);
-    ui->atack_label->setNum(atack);
-    ui->protect_label->setNum(protect);
-    if(q_flag & pow2+dexter2+intellekt2+udacha2 <= 20 & counter > 2){
+
+    if(q_flag & pow2+dexter2+intellekt2+udacha2 <= 20 & counter > 2 & m_flag){
+        ui->health_label->setNum(health);
+        ui->mana_label->setNum(mana);
+        ui->atack_label->setNum(atack);
+        ui->protect_label->setNum(protect);
         ui->erro_label->setVisible(false);
         ui->class_inf->setVisible(true);
         ui->name_label->setText(neww);
