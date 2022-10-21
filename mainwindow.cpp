@@ -46,7 +46,7 @@ void MainWindow::my_func()
     pow=ui->power->text().toInt(&flag);  // снимаем значение силы
 
 
-    if(!flag || pow < 1 || pow > 10){  //
+    if(!flag || pow < 1 || pow > 10 || (pol==1 & pow==10)){  //
         ui->label_3->setText("<font color='black'>Сила</font>");
 //        ui->erro_label->setVisible(true);
 //        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
@@ -68,7 +68,7 @@ void MainWindow::my_func()
 
 
     dexter = ui->dexterity->text().toInt(&flag2); //  снимаем очки ловкости
-    if(!flag2 || dexter < 1 || dexter > 10){
+    if(!flag2 || dexter < 1 || dexter > 10 || (pol==0 & dexter==10)){
         ui->label_4->setText("<font color='black'>Ловкость</font>");
 //        ui->erro_label->setVisible(true);
 //        ui->erro_label->setText("Вы ввели неверное значение или оставили окно пустым");
@@ -206,7 +206,15 @@ void MainWindow::on_create_clicked()
     pow=ui->power->text().toInt(&flag);
     if(m_flag){
     if(flag & pow > 0 & pow < 11){  // проверяем значение силы
-        pow2 = pow;
+        if (pol==1 & pow == 10){
+            QMessageBox::information(this, "Error", "Некорректное значение силы");
+            m_flag = false;
+            q_flag=false;
+        }
+        else{
+            pow2 = pow;
+        }
+
     }
     else{
 
@@ -218,7 +226,14 @@ void MainWindow::on_create_clicked()
     if(m_flag){
     dexter = ui->dexterity->text().toInt(&flag2);
     if(flag2 & dexter > 0 & dexter < 11){
-        dexter2 = dexter;
+        if(pol==0 & dexter == 10){
+            QMessageBox::information(this, "Error", "Некорректное значение ловкости");
+            m_flag=false;
+        }
+        else{
+            dexter2 = dexter;
+        }
+
 
     }
     else{
@@ -252,7 +267,7 @@ void MainWindow::on_create_clicked()
     atack = (5 * pow2) + (3 * dexter2) + intellekt2 + (2 * udacha2);
     protect = pow2+ (3 * dexter2) + (4 * intellekt2) + (2 * udacha2);
 
-    if(q_flag & pow2+dexter2+intellekt2+udacha2 <= 20 & counter > 2 & m_flag){
+    if(q_flag & pow2+dexter2+intellekt2+udacha2 == 20 & counter > 2 & m_flag){
         ui->health_label->setNum(health);
         ui->mana_label->setNum(mana);
         ui->atack_label->setNum(atack);
@@ -265,12 +280,13 @@ void MainWindow::on_create_clicked()
                 ui->class_inf->setText("Воин");
             }
 
-            else if (pow2 > 5 & intellekt2 > 5){
-                ui->class_inf->setText("Воин - ученый");
-            }
             else if (pow2 > 4 & intellekt2 > 8){
                 ui->class_inf->setText("Десница");
             }
+            else if (pow2 > 5 & intellekt2 > 5){
+                ui->class_inf->setText("Воин - ученый");
+            }
+
             else if (pow2 < 4 & intellekt2 > 8){
                  ui->class_inf->setText("Советник");
             }
@@ -306,13 +322,14 @@ void MainWindow::on_create_clicked()
             if (pow2 > 5 & intellekt2 < 5){
                 ui->class_inf->setText("Дева-воительница");
             }
+            else if (pow2 > 4 & intellekt2 == 10){
+                ui->class_inf->setText("Десница");
+            }
 
             else if (pow2 > 5 & intellekt2 > 5){
                 ui->class_inf->setText("Воительница - ученый");
             }
-            else if (pow2 > 4 & intellekt2 == 10){
-                ui->class_inf->setText("Десница");
-            }
+
             else if (pow2 < 4 & intellekt2 == 10){
                  ui->class_inf->setText("Советница");
             }
@@ -374,6 +391,9 @@ void MainWindow::on_clean_clicked()
     ui->label_5->setText("<font color='black'>Интеллект</font>");
     ui->luck->clear();
     ui->label_6->setText("<font color='black'>Удача</font>");
+    ui->health_label->clear();
+    ui->mana_label->clear();
+    ui->atack_label->clear();
+    ui->protect_label->clear();
 
 }
-
